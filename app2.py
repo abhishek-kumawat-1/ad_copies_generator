@@ -61,7 +61,7 @@ def generate_ads(top_keywords, brand, serp_df_list, no_of_headlines, no_of_descr
     return response.content if response else "Error generating ads."
 
 def main():
-    st.set_page_config(page_title="Ad Copies Generator", layout="wide")
+    st.set_page_config(page_title="Ad Copies Generator",page_icon="📝", layout="wide")
 
     # Title with LinkedIn button
     col1, col2 = st.columns([4, 1])
