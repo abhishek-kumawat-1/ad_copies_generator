@@ -39,7 +39,7 @@ def get_keyword_ideas_with_themes(client, customer_id, location_ids, language_id
     return pd.DataFrame(all_results)
 
 def scrape_google_search_results(keyword, hl, gl, num_results=10):
-    API_KEY = st.secrets["serp_api"]  # Replace with your SerpAPI key
+    API_KEY = st.secrets["serp_api"]
     search = GoogleSearch({
         "q": keyword,
         "num": num_results,
@@ -56,17 +56,28 @@ def generate_ads(top_keywords, brand, serp_df_list, no_of_headlines, no_of_descr
     guideline1 = f"1. Write compelling, genuine ad copy based on {', '.join(top_keywords)}."
     guideline2 = f"2. Reflect our brand {brand} in the messaging."
     guardrail = "Headlines: max 30 chars, Descriptions: max 90 chars."
-    prompt = f"Generate {no_of_headlines} headlines and {no_of_descriptions} descriptions in {hl} for {gl} incorporating {serp_df_list}. Guidelines: {guideline1} {guideline2}. {guardrail}"
+    prompt = f"Generate {no_of_headlines} headlines and {no_of_descriptions} descriptions in {hl} for {gl} incorporating {serp_df_list}. Guidelines: {guideline1} {guideline2}. {guardrail}."
     response = ai_client.invoke(prompt)
     return response.content if response else "Error generating ads."
 
 def main():
-    st.set_page_config(layout="wide")  # Set layout to wide
-    
-    st.title("Google Ads Keyword & Ad Generator")
-    
-    col1, col2 = st.columns([1, 2])  # Split layout into two columns
-    
+    st.set_page_config(page_title="Ad Copies Generator", layout="wide")
+
+    # Title with LinkedIn button
+    col1, col2 = st.columns([4, 1])
+    with col1:
+        st.title("Google Ads Keyword & Ad Generator")
+    with col2:
+        st.markdown("""
+            <a href="https://www.linkedin.com/in/abhishek-kumawat-iitd/" target="_blank">
+                <button style="background-color:#0077B5; color:white; border:none; padding:8px 16px; border-radius:5px; font-size:16px; cursor:pointer;">
+                    Connect on LinkedIn
+                </button>
+            </a>
+        """, unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 2])
+
     language_country_mapping = {
         "Dutch": {"hl": "nl", "language_code": 1010},
         "French": {"hl": "fr", "language_code": 1002},
@@ -78,7 +89,7 @@ def main():
         "Swedish": {"hl": "sv", "language_code": 1015},
         "English": {"hl": "en", "language_code": 1000}
     }
-    
+
     country_mapping = {
         "Belgium": {"gl": "BE", "location_code": 2056},
         "Netherlands": {"gl": "NL", "location_code": 2528},
@@ -91,40 +102,49 @@ def main():
         "Sweden": {"gl": "SE", "location_code": 2752},
         "India": {"gl": "IN", "location_code": 2356}
     }
-    
+
     with col1:
         st.header("Input Parameters")
         base_keywords = st.text_area("Enter base keywords (comma-separated)", "vakantiehuis").split(",")
         language = st.selectbox("Select Language", list(language_country_mapping.keys()))
         country = st.selectbox("Select Country", list(country_mapping.keys()))
         brand = st.selectbox("Select Brand", ["Belvilla", "DanCenter", "Danland", "OYO", "CheckMyGuest"])
-        
+
         language_code = language_country_mapping[language]["language_code"]
         hl = language_country_mapping[language]["hl"]
         country_code = country_mapping[country]["location_code"]
         gl = country_mapping[country]["gl"]
-        
+
         no_of_headlines = st.number_input("Number of Headlines", 5, 25, 20)
         no_of_descriptions = st.number_input("Number of Descriptions", 2, 10, 8)
         generate_button = st.button("Generate Keywords & Ad Copies")
-    
+
     with col2:
         if generate_button:
             with st.spinner("Generating results, please wait..."):
                 try:
                     st.header("Results")
-                    client = GoogleAdsClient.load_from_storage("google_ads_auth.yaml")
+                    credentials = {
+                        "developer_token": st.secrets["developer_token"],
+                        "client_id": st.secrets["client_id"],
+                        "client_secret": st.secrets["client_secret"],
+                        "refresh_token": st.secrets["refresh_token"],
+                        "use_proto_plus": False,
+                        "login_customer_id": st.secrets["login_customer_id"]
+                    }
+
+                    client = GoogleAdsClient.load_from_dict(credentials)
                     df = get_keyword_ideas_with_themes(client, "7186856567", [country_code], language_code, base_keywords)
                     top_keywords_df = df.sort_values(by="Avg Monthly Searches", ascending=False).head(10)
                     st.subheader("Top Keywords")
                     st.dataframe(top_keywords_df)
-                    
+
                     top_keywords = top_keywords_df["Keyword"].tolist()
                     
                     serp_df = scrape_google_search_results(",".join(base_keywords), hl, gl)
                     st.subheader("Google Search Results")
                     st.dataframe(serp_df)
-                    
+
                     generated_ads = generate_ads(top_keywords, brand, serp_df.to_dict(), no_of_headlines, no_of_descriptions, hl, gl)
                     st.subheader("Generated Ads")
                     st.text_area("", generated_ads, height=300)
