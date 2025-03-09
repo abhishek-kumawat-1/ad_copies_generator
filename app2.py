@@ -79,36 +79,37 @@ def main():
     col1, col2 = st.columns([1, 2])
 
     language_country_mapping = {
-        "Dutch": {"hl": "nl", "language_code": 1010},
-        "French": {"hl": "fr", "language_code": 1002},
-        "Italian": {"hl": "it", "language_code": 1004},
-        "Spanish": {"hl": "es", "language_code": 1003},
-        "German": {"hl": "de", "language_code": 1001},
-        "Danish": {"hl": "da", "language_code": 1009},
-        "Norwegian": {"hl": "no", "language_code": 1013},
-        "Swedish": {"hl": "sv", "language_code": 1015},
-        "English": {"hl": "en", "language_code": 1000}
-    }
+    "Danish": {"hl": "da", "language_code": 1009},
+    "Dutch": {"hl": "nl", "language_code": 1010},
+    "English": {"hl": "en", "language_code": 1000},
+    "French": {"hl": "fr", "language_code": 1002},
+    "German": {"hl": "de", "language_code": 1001},
+    "Italian": {"hl": "it", "language_code": 1004},
+    "Norwegian": {"hl": "no", "language_code": 1013},
+    "Spanish": {"hl": "es", "language_code": 1003},
+    "Swedish": {"hl": "sv", "language_code": 1015}
+}
 
     country_mapping = {
-        "Belgium": {"gl": "BE", "location_code": 2056},
-        "Netherlands": {"gl": "NL", "location_code": 2528},
-        "France": {"gl": "FR", "location_code": 2250},
-        "Italy": {"gl": "IT", "location_code": 2380},
-        "Spain": {"gl": "ES", "location_code": 2724},
-        "Germany": {"gl": "DE", "location_code": 2276},
-        "Denmark": {"gl": "DK", "location_code": 2208},
-        "Norway": {"gl": "NO", "location_code": 2578},
-        "Sweden": {"gl": "SE", "location_code": 2752},
-        "India": {"gl": "IN", "location_code": 2356}
-    }
+    "Belgium": {"gl": "BE", "location_code": 2056},
+    "Denmark": {"gl": "DK", "location_code": 2208},
+    "France": {"gl": "FR", "location_code": 2250},
+    "Germany": {"gl": "DE", "location_code": 2276},
+    "India": {"gl": "IN", "location_code": 2356},
+    "Italy": {"gl": "IT", "location_code": 2380},
+    "Netherlands": {"gl": "NL", "location_code": 2528},
+    "Norway": {"gl": "NO", "location_code": 2578},
+    "Spain": {"gl": "ES", "location_code": 2724},
+    "Sweden": {"gl": "SE", "location_code": 2752}
+}
+
 
     with col1:
         st.header("Input Parameters")
         base_keywords = st.text_area("Enter base keywords (comma-separated)", "vakantiehuis").split(",")
         language = st.selectbox("Select Language", list(language_country_mapping.keys()))
         country = st.selectbox("Select Country", list(country_mapping.keys()))
-        brand = st.selectbox("Select Brand", ["Belvilla", "DanCenter", "Danland", "OYO", "CheckMyGuest"])
+        brand = st.selectbox("Select Brand", ["Belvilla", "CheckMyGuest","DanCenter", "Danland", "OYO"])
 
         language_code = language_country_mapping[language]["language_code"]
         hl = language_country_mapping[language]["hl"]
