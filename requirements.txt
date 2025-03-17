@@ -4,3 +4,4 @@ google-ads
 serpapi
 langchain-openai
 google-search-results
+google-serp-api
