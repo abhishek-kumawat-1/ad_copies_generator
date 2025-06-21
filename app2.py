@@ -166,7 +166,7 @@ from serpapi import GoogleSearch
 import google.generativeai as genai
 # from langchain_openai import AzureChatOpenAI
 import secrets
-genai.configure(api_key='AIzaSyDTX0HqYg7M3zDca4QWGQ9eWCDtjXEpeWk')
+genai.configure(api_key=st.secrets["gemini_api"])
 model = genai.GenerativeModel("gemini-2.5-pro")
 def map_locations_ids_to_resource_names(client, location_ids):
     build_resource_name = client.get_service("GeoTargetConstantService").geo_target_constant_path
