@@ -234,7 +234,7 @@ def main():
         st.markdown("""
             <a href="https://www.linkedin.com/in/abhishek-kumawat-iitd/" target="_blank">
                 <button style="background-color:#0077B5; color:white; border:none; padding:8px 16px; border-radius:5px; font-size:16px; cursor:pointer;">
-                    Connect on LinkedIn
+                    Feedback? / How it works? 
                 </button>
             </a>
         """, unsafe_allow_html=True)
