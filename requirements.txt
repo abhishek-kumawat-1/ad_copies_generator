@@ -5,3 +5,4 @@ serpapi
 langchain-openai
 google-search-results
 google-serp-api
+google-generativeai
